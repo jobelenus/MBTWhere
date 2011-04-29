@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lines>
+	<line name="red">
+		<station name="Alewife" lat="42.4" lng="-71.12" flag="0">
+			<outbound code="RALEN" previous="RDAVN" next="NULL"/>
+			<inbound code="RAELN" previous="NULL" next="RDAVN"/>
+		</station>
+		<station name="Davis" lat="42.4" lng="-71.14" flag="0">
+			<outbound code="RDAVN" previous="RPORN" next="RALEN"/>
+			<inbound code="RDAVS" previous="RALEN" next="RPORS"/>
+		</station>
+		<station name="Porter" lat="42.39" lng="-71.12" flag="0">
+			<outbound code="RPORN" previous="RHARN" next="RDAVN"/>
+			<inbound code="RPORS" previous="RDAVS" next="RHARS"/>
+		</station>
+		<station name="Harvard" lat="42.37" lng="-71.12" flag="0">
+			<outbound code="RHARN" previous="RCENN" next="RPORN"/>
+			<inbound code="RHARS" previous="RPORS" next="RCENS"/>
+		</station>
+		<station name="Central" lat="42.37" lng="-71.1" flag="0">
+			<outbound code="RCENN" previous="RKENN" next="RHARN"/>
+			<inbound code="RCENS" previous="RHARS" next="RKENS"/>
+		</station>
+		<station name="Kendall/MIT" lat="42.36" lng="-71.09" flag="0">
+			<outbound code="RKENN" previous="RMGHN" next="RCENN"/>
+			<inbound code="RKENS" previous="RCENS" next="RMGHS"/>
+		</station>
+		<station name="Charles MGH" lat="42.36" lng="-71.09" flag="0">
+			<outbound code="RMGHN" previous="RPRKN" next="RKENN"/>
+			<inbound code="RMGHS" previous="RKENS" next="RPRKS"/>
+		</station>
+		<station name="Park Street" lat="42.36" lng="-71.06" flag="0">
+			<outbound code="RPRKN" previous="RDTCN" next="RMGHN"/>
+			<inbound code="RPRKS" previous="RMGHS" next="RDTCS"/>
+		</station>
+		<station name="Downtown Crossing" lat="42.36" lng="-71.06" flag="0">
+			<inbound code="RDTCN" previous="NULL" next="RPRKN"/>
+			<outbound code="RDTCS" previous="RPRKS" next="NULL"/>
+		</station>
+	</line>
+</lines>
