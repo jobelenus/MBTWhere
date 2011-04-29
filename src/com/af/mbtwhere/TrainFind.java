@@ -72,7 +72,6 @@ public class TrainFind extends Activity implements OnGestureListener {
         button = (Button)findViewById(R.id.find_red);
         time_display = (TextView)findViewById(R.id.red_display);
         progress = (ProgressBar)findViewById(R.id.red_progress);
-        progress.setIndeterminate(true);
         progress.setVisibility(View.INVISIBLE);
         
         red_stations = ((Line)lines.get("red")).getStationsByName();
@@ -165,7 +164,7 @@ public class TrainFind extends Activity implements OnGestureListener {
     			    	//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:m:s a");
     			    	long diff = this_time.getTime() - today.getTime();
     			    	if(diff > 0) {
-	    			    	String label = getString(R.string.expecting_train)+String.format("%d:%d", 
+	    			    	String label = getString(R.string.expecting_train)+String.format(" %02d:%02ld", 
 	    			    			TimeUnit.MILLISECONDS.toSeconds(diff) / 60,
 	    			    		    TimeUnit.MILLISECONDS.toSeconds(diff) % 60 );
 	    			    	publishProgress(label);
@@ -188,7 +187,6 @@ public class TrainFind extends Activity implements OnGestureListener {
     	//this gets executed on the UI thread, so don't clog it up
     	protected void onProgressUpdate(String... next_train_at) {
     		String next = next_train_at[0];
-    		Log.v(TAG, "next_train="+next);
     		time_display.setText(next);
     	}
     	
