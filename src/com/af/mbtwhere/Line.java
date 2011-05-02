@@ -6,6 +6,9 @@ import android.util.Log;
 
 public class Line {
 	String name;
+	final static int ANY = 0;
+	final static int INBOUND = 1;
+	final static int OUTBOUND = 2;
 	ArrayList<Station> stations = new ArrayList<Station>();
 	
 	public String[] getStationsByName() {
@@ -27,9 +30,23 @@ public class Line {
 	}
 	
 	public Station getStationByCode(String code) {
+		return getStationByCode(code, ANY);
+	}
+	
+	public Station getStationByCode(String code, int direction) {
 		for(Station station : stations) {
-			if(code.equals(station.outbound_code) || code.equals(station.inbound_code)) {
-				return station;
+			if(direction==ANY) {
+				if(code.equals(station.outbound_code) || code.equals(station.inbound_code)) {
+					return station;
+				}
+			} else if (direction==INBOUND) {
+				if(code.equals(station.inbound_code)) {
+					return station;
+				}
+			} else if (direction==OUTBOUND) {
+				if(code.equals(station.outbound_code)) {
+					return station;
+				}
 			}
 		}
 		return null;
@@ -54,7 +71,14 @@ public class Line {
 		if(start.name.equals(end.name)) {
 			return start;
 		} else if(start.outbound_next_code != null && start.outbound_next_code.length() > 0 && !"NULL".equals(start.outbound_next_code)) {
-			return nextOutboundTo(getStationByCode(start.outbound_next_code), end);
+			Station next_station = getStationByCode(start.outbound_next_code, OUTBOUND);
+			if(next_station==null) {
+				Log.v("MBTLine", "flipping from outbound to inbound");
+				next_station = getStationByCode(start.outbound_next_code, INBOUND);
+				return nextInboundTo(next_station, end);
+			} else {
+				return nextOutboundTo(next_station, end);
+			}
 		} else {
 			return null;
 		}
@@ -64,7 +88,13 @@ public class Line {
 		if(start.name.equals(end.name)) {
 			return start;
 		} else if(start.inbound_next_code != null && start.inbound_next_code.length() > 0 && !"NULL".equals(start.inbound_next_code)) {
-			return nextInboundTo(getStationByCode(start.inbound_next_code), end);
+			Station next_station = getStationByCode(start.inbound_next_code, INBOUND);
+			if(next_station == null) {
+				Log.v("MBTLine", "flipping from inbound to outbound");
+				next_station = getStationByCode(start.inbound_next_code, OUTBOUND);
+				return nextOutboundTo(next_station, end);
+			}
+			return nextInboundTo(next_station, end);
 		} else {
 			return null;
 		}

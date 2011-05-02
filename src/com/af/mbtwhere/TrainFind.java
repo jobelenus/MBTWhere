@@ -2,6 +2,7 @@ package com.af.mbtwhere;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.ArrayList;
 
@@ -81,8 +82,15 @@ public class TrainFind extends Activity implements OnGestureListener {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	String route = ((Line) lines.get("red")).getCodeFor(red_start, red_end);
-            	progress.setVisibility(View.VISIBLE);
-            	new GetLineFeed().execute(red_feed, route);
+            	Log.v(TAG, "start="+red_start+", end="+red_end);
+            	if(red_start.equals(red_end)) {
+            		time_display.setText(R.string.already_there);
+            	} else {
+	            	Log.v(TAG, "route="+route);
+	            	progress.setVisibility(View.VISIBLE);
+	            	time_display.setText("");
+	            	new GetLineFeed().execute(red_feed, route);
+            	}
             }
         });
         
@@ -143,6 +151,19 @@ public class TrainFind extends Activity implements OnGestureListener {
     class GetLineFeed extends AsyncTask<String, String, Void> {
     	HttpClient client = null;
     	
+    	public String combine(String[] s, String glue) {
+    	  int k=s.length;
+    	  if (k==0) {
+    	    return null;
+    	  }
+    	  StringBuilder out=new StringBuilder();
+    	  out.append(s[0]);
+    	  for (int x=1;x<k;++x) {
+    	    out.append(glue).append(s[x]);
+    	  }
+    	  return out.toString();
+    	}
+    	
     	@Override
     	protected Void doInBackground(String... vargs) {
     		HttpClient client = new DefaultHttpClient();
@@ -155,22 +176,23 @@ public class TrainFind extends Activity implements OnGestureListener {
     			JSONArray records = new JSONArray(responseBody);
     			for (int i = 0; i < records.length(); ++i) {
     			    JSONObject record = records.getJSONObject(i);
+    			    Log.v(TAG, "record="+record);
     			    String this_code = record.getString("PlatformKey");
     			    String this_type = record.getString("InformationType");
     			    if(this_code.equals(route_code) && "Predicted".equals(this_type)) {
-    			    	SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy h:m:s a");
-    			    	Date this_time = sdf.parse(record.getString("Time"));
-    			    	Date today = new Date();
-    			    	//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd h:m:s a");
-    			    	long diff = this_time.getTime() - today.getTime();
-    			    	if(diff > 0) {
-	    			    	String label = getString(R.string.expecting_train)+String.format(" %02d:%02ld", 
-	    			    			TimeUnit.MILLISECONDS.toSeconds(diff) / 60,
-	    			    		    TimeUnit.MILLISECONDS.toSeconds(diff) % 60 );
-	    			    	publishProgress(label);
+    			    	String time_remaining;
+    			    	String[] remaining = record.getString("TimeRemaining").split(":");
+    			    	String[] display_time = new String[2];
+    			    	if("00".equals(remaining[0])) { //reformat time display to get rid of hours
+    			    		display_time[0] = remaining[1];
+    			    		display_time[1] = remaining[2]; 
     			    	} else {
-    			    		publishProgress(getString(R.string.now_train));
+    			    		display_time = remaining;
     			    	}
+    			    	time_remaining = combine(display_time, ":");
+	    			    String label = getString(R.string.expecting_train)+" "+time_remaining;
+	    			   	Log.v(TAG, "label="+label);
+	    			   	publishProgress(label);
     			    	return null;
     			    }
     			}

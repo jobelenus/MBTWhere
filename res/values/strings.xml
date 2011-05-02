@@ -2,7 +2,8 @@
 <resources>
     <string name="app_name">MBTWhere</string>
     <string name="find_train">Find Next Train</string>
-    <string name="expecting_train">Next train arriving in:</string>
+    <string name="expecting_train">Next train arriving in</string>
     <string name="now_train">It\'s gonna to be a photo finish!</string>
     <string name="shrug">SHRUG?!</string>
+    <string name="already_there">You\'ve arrived!</string>
 </resources>

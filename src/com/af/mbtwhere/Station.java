@@ -11,4 +11,6 @@ public class Station {
 	String inbound_code;
 	String inbound_next_code;
 	String inbound_prev_code;
+	Boolean inbound_switch;
+	Boolean outbound_switch;
 }

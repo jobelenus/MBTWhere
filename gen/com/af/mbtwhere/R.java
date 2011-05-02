@@ -32,6 +32,7 @@ public final class R {
         public static final int main=0x7f030000;
     }
     public static final class string {
+        public static final int already_there=0x7f050005;
         public static final int app_name=0x7f050000;
         public static final int expecting_train=0x7f050002;
         public static final int find_train=0x7f050001;

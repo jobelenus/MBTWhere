@@ -3,7 +3,7 @@
 	<line name="red">
 		<station name="Alewife" lat="42.4" lng="-71.12" flag="0">
 			<outbound code="RALEN" previous="RDAVN" next="NULL"/>
-			<inbound code="RAELN" previous="NULL" next="RDAVN"/>
+			<inbound code="RAELN" previous="NULL" next="RDAVS"/>
 		</station>
 		<station name="Davis" lat="42.4" lng="-71.14" flag="0">
 			<outbound code="RDAVN" previous="RPORN" next="RALEN"/>
