@@ -1,41 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lines>
 	<line name="red">
-		<station name="Alewife" lat="42.4" lng="-71.12" flag="0">
+		<station name="Alewife" lat="42.4" lng="-71.12" flag="-1">
 			<outbound code="RALEN" previous="RDAVN" next="NULL"/>
 			<inbound code="RAELN" previous="NULL" next="RDAVS"/>
 		</station>
-		<station name="Davis" lat="42.4" lng="-71.14" flag="0">
+		<station name="Davis" lat="42.4" lng="-71.14" flag="-1">
 			<outbound code="RDAVN" previous="RPORN" next="RALEN"/>
 			<inbound code="RDAVS" previous="RALEN" next="RPORS"/>
 		</station>
-		<station name="Porter" lat="42.39" lng="-71.12" flag="0">
+		<station name="Porter" lat="42.39" lng="-71.12" flag="-1">
 			<outbound code="RPORN" previous="RHARN" next="RDAVN"/>
 			<inbound code="RPORS" previous="RDAVS" next="RHARS"/>
 		</station>
-		<station name="Harvard" lat="42.37" lng="-71.12" flag="0">
+		<station name="Harvard" lat="42.37" lng="-71.12" flag="-1">
 			<outbound code="RHARN" previous="RCENN" next="RPORN"/>
 			<inbound code="RHARS" previous="RPORS" next="RCENS"/>
 		</station>
-		<station name="Central" lat="42.37" lng="-71.1" flag="0">
+		<station name="Central" lat="42.37" lng="-71.1" flag="-1">
 			<outbound code="RCENN" previous="RKENN" next="RHARN"/>
 			<inbound code="RCENS" previous="RHARS" next="RKENS"/>
 		</station>
-		<station name="Kendall/MIT" lat="42.36" lng="-71.09" flag="0">
+		<station name="Kendall/MIT" lat="42.36" lng="-71.09" flag="-1">
 			<outbound code="RKENN" previous="RMGHN" next="RCENN"/>
 			<inbound code="RKENS" previous="RCENS" next="RMGHS"/>
 		</station>
-		<station name="Charles MGH" lat="42.36" lng="-71.09" flag="0">
+		<station name="Charles MGH" lat="42.36" lng="-71.09" flag="-1">
 			<outbound code="RMGHN" previous="RPRKN" next="RKENN"/>
 			<inbound code="RMGHS" previous="RKENS" next="RPRKS"/>
 		</station>
-		<station name="Park Street" lat="42.36" lng="-71.06" flag="0">
+		<station name="Park Street" lat="42.36" lng="-71.06" flag="-1">
 			<outbound code="RPRKN" previous="RDTCN" next="RMGHN"/>
 			<inbound code="RPRKS" previous="RMGHS" next="RDTCS"/>
 		</station>
-		<station name="Downtown Crossing" lat="42.36" lng="-71.06" flag="0">
+		<station name="Downtown Crossing" lat="42.36" lng="-71.06" flag="-1">
 			<inbound code="RDTCN" previous="NULL" next="RPRKN"/>
-			<outbound code="RDTCS" previous="RPRKS" next="NULL"/>
+			<outbound code="RDTCS" previous="RPRKS" next="RSOUS"/>
+		</station>
+		<station name="South Station" lat="42.35" lng="-71.06" flag="-1">
+			<inbound code="RSOUN" previous="RBROS" next="RDTCN"/>
+			<outbound code="RSOUS" previous="RDTCS" next="RBRON"/>
+		</station>
+		<station name="Broadway" lat="42.34" lng="-71.06" flag="-1">
+			<inbound code="RBRON" previous="RANDN" next="RSOUN"/>
+			<outbound code="RBROS" previous="RSOUS" next="RANDS"/>
+		</station>
+		<station name="Andrew" lat="42.33" lng="-71.06" flag="-1">
+			<inbound code="RANDN" previous="RJFKN" next="RBRON"/>
+			<outbound code="RANDS" previous="RBROS" next="RJFKS"/>
+		</station>
+		<station name="JFK" lat="42.33" lng="-71.05" flag="-1">
+			<inbound code="RJFKN" previous="RSAVN" next="RANDN"/>
+			<outbound code="RJFKS" previous="RANDS" next="RSAVS" flag="1"/>
+			<!-- <outbound code="RJFKS" previous="RANDS" next="RNQUS" flag="0"/> -->
+		</station>
+		<station name="Savin Hill" lat="42.31" lng="-71.05" flag="1">
+			<inbound code="RSAVN" previous="RFIEN" next="RJFKN"/>
+			<outbound code="RSAVS" previous="RJFKS" next="RFIES"/>
+		</station>
+		<station name="Fields Corner" lat="42.30" lng="-71.06" flag="1">
+			<inbound code="RFIEN" previous="RSHAN" next="RSAVN"/>
+			<outbound code="RFIES" previous="RSAVS" next="RSHAS"/>
+		</station>
+		<station name="Shawmut" lat="42.29" lng="-71.07" flag="1">
+			<inbound code="RSHAN" previous="RASHS" next="RFIEN"/>
+			<outbound code="RSHAS" previous="RFIES" next="RASHS"/>
+		</station>
+		<station name="Ashmont" lat="42.28" lng="-71.06" flag="1">
+			<inbound code="RASHS" previous="NULL" next="RSHAN"/>
+			<outbound code="RASHS" previous="RSHAS" next="NULL"/>
+		</station>
+		<station name="North Quincy" lat="42.28" lng="-71.02" flag="0">
+			<inbound code="RNQUN" previous="RWOLN" next="RJFKN"/>
+			<outbound code="RNQUS" previous="RJFKS" next="RWOLS"/>
+		</station>
+		<station name="Wollaston" lat="42.27" lng="-71.02" flag="0">
+			<inbound code="RWOLN" previous="RQUCN" next="RNQUN"/>
+			<outbound code="RWOLS" previous="RNQUS" next="RQUCS"/>
+		</station>
+		<station name="Quincy Center" lat="42.25" lng="-71.01" flag="0">
+			<inbound code="RQUCN" previous="RQUAN" next="RWOLN"/>
+			<outbound code="RQUCS" previous="RWOLS" next="RQUAS"/>
+		</station>
+		<station name="Quincy Adams" lat="42.23" lng="-71.01" flag="0">
+			<inbound code="RQUAN" previous="RBRAN" next="RQUCN"/>
+			<outbound code="RQUAS" previous="RQUCS" next="RBRAS"/>
+		</station>
+		<station name="Braintree" lat="42.20" lng="-71.0" flag="0">
+			<inbound code="RBRAS" previous="NULL" next="RQUAN"/>
+			<outbound code="RBRAS" previous="RQUAS" next="NULL"/>
 		</station>
 	</line>
 </lines>

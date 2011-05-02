@@ -254,14 +254,30 @@ public class TrainFind extends Activity implements OnGestureListener {
     			tag = parser.getName();
     			if("outbound".equals(tag)) {
     				i++;
-    				station.outbound_code = parser.getAttributeValue(0);
-    				station.outbound_prev_code = parser.getAttributeValue(1);
-    				station.outbound_next_code = parser.getAttributeValue(2);
+    				Route new_out = new Route();
+    				new_out.code = parser.getAttributeValue(0);
+    				new_out.prev_code = parser.getAttributeValue(1);
+    				new_out.next_code = parser.getAttributeValue(2);
+    				try {
+    					new_out.flag = parser.getAttributeValue(3);
+    				} catch(Exception e) {
+    					new_out.flag = Line.ANY_BRANCH;
+    				}
+    				new_out.station = station;
+    				station.outbound_routes.add(new_out);
     			} else if("inbound".equals(tag)) {
     				i++;
-    				station.inbound_code = parser.getAttributeValue(0);
-    				station.inbound_prev_code = parser.getAttributeValue(1);
-    				station.inbound_next_code = parser.getAttributeValue(2);
+    				Route new_in = new Route();
+    				new_in.code = parser.getAttributeValue(0);
+    				new_in.prev_code = parser.getAttributeValue(1);
+    				new_in.next_code = parser.getAttributeValue(2);
+    				try {
+    					new_in.flag = parser.getAttributeValue(3);
+    				} catch(Exception e) {
+    					new_in.flag = Line.ANY_BRANCH;
+    				}
+    				new_in.station = station;
+    				station.inbound_routes.add(new_in);
     			}
     		}
     		eventType = parser.next();
