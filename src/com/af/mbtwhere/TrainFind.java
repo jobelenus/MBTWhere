@@ -247,13 +247,11 @@ public class TrainFind extends Activity implements OnGestureListener {
 		station.lng = parser.getAttributeValue(2);
 		station.flag = parser.getAttributeValue(3);
 		int eventType = parser.next();
-		int i = 0;
-    	while(i < 2) { //only two tags per station
-    		String tag = "";
+		String tag = "";
+    	while(true) { 
     		if(eventType == XmlPullParser.START_TAG) {
     			tag = parser.getName();
     			if("outbound".equals(tag)) {
-    				i++;
     				Route new_out = new Route();
     				new_out.code = parser.getAttributeValue(0);
     				new_out.prev_code = parser.getAttributeValue(1);
@@ -266,7 +264,6 @@ public class TrainFind extends Activity implements OnGestureListener {
     				new_out.station = station;
     				station.outbound_routes.add(new_out);
     			} else if("inbound".equals(tag)) {
-    				i++;
     				Route new_in = new Route();
     				new_in.code = parser.getAttributeValue(0);
     				new_in.prev_code = parser.getAttributeValue(1);
@@ -279,9 +276,13 @@ public class TrainFind extends Activity implements OnGestureListener {
     				new_in.station = station;
     				station.inbound_routes.add(new_in);
     			}
+    		} else if(eventType == XmlPullParser.END_TAG) {
+    			tag = parser.getName();
+    			if("station".equals(tag)) {
+    				return station;
+    			}
     		}
     		eventType = parser.next();
     	}
-    	return station;
     }
 }

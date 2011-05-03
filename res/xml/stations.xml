@@ -39,7 +39,7 @@
 		</station>
 		<station name="South Station" lat="42.35" lng="-71.06" flag="-1">
 			<inbound code="RSOUN" previous="RBROS" next="RDTCN"/>
-			<outbound code="RSOUS" previous="RDTCS" next="RBRON"/>
+			<outbound code="RSOUS" previous="RDTCS" next="RBROS"/>
 		</station>
 		<station name="Broadway" lat="42.34" lng="-71.06" flag="-1">
 			<inbound code="RBRON" previous="RANDN" next="RSOUN"/>
@@ -52,7 +52,7 @@
 		<station name="JFK" lat="42.33" lng="-71.05" flag="-1">
 			<inbound code="RJFKN" previous="RSAVN" next="RANDN"/>
 			<outbound code="RJFKS" previous="RANDS" next="RSAVS" flag="1"/>
-			<!-- <outbound code="RJFKS" previous="RANDS" next="RNQUS" flag="0"/> -->
+			<outbound code="RJFKS" previous="RANDS" next="RNQUS" flag="0"/>
 		</station>
 		<station name="Savin Hill" lat="42.31" lng="-71.05" flag="1">
 			<inbound code="RSAVN" previous="RFIEN" next="RJFKN"/>
