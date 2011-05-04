@@ -16,7 +16,10 @@ import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.github.droidfu.concurrent.BetterAsyncTask;
+
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -89,7 +92,7 @@ public class TrainFind extends Activity implements OnGestureListener {
 	            	Log.v(TAG, "route="+route);
 	            	progress.setVisibility(View.VISIBLE);
 	            	time_display.setText("");
-	            	new GetLineFeed().execute(red_feed, route);
+	            	new GetLineFeed(v.getContext()).execute(red_feed, route);
             	}
             }
         });
@@ -148,8 +151,12 @@ public class TrainFind extends Activity implements OnGestureListener {
     	return true;
     }
     
-    class GetLineFeed extends AsyncTask<String, String, Void> {
-    	HttpClient client = null;
+    class GetLineFeed extends BetterAsyncTask<String, Void, String> {
+		HttpClient client = null;
+		
+    	public GetLineFeed(Context c) {
+			super(c);
+		}
     	
     	public String combine(String[] s, String glue) {
     	  int k=s.length;
@@ -165,7 +172,7 @@ public class TrainFind extends Activity implements OnGestureListener {
     	}
     	
     	@Override
-    	protected Void doInBackground(String... vargs) {
+    	protected String doCheckedInBackground(Context c, String... vargs) {
     		HttpClient client = new DefaultHttpClient();
     		String feed_url = vargs[0];
     		String route_code = vargs[1];
@@ -192,11 +199,10 @@ public class TrainFind extends Activity implements OnGestureListener {
     			    	time_remaining = combine(display_time, ":");
 	    			    String label = getString(R.string.expecting_train)+" "+time_remaining;
 	    			   	Log.v(TAG, "label="+label);
-	    			   	publishProgress(label);
-    			    	return null;
+    			    	return label;
     			    }
     			}
-    			publishProgress(getString(R.string.shrug));
+    			return getString(R.string.shrug);
     		} catch(Throwable t) {
     			Log.v(TAG, ""+t);
     			//TODO: errors need to be reported
@@ -207,16 +213,21 @@ public class TrainFind extends Activity implements OnGestureListener {
     	
     	@Override
     	//this gets executed on the UI thread, so don't clog it up
-    	protected void onProgressUpdate(String... next_train_at) {
-    		String next = next_train_at[0];
-    		time_display.setText(next);
+    	protected void onProgressUpdate(Void... junk) {
+    		
     	}
-    	
-    	@Override
-    	protected void onPostExecute(Void junk) {
-    		//client.getConnectionManager().shutdown();
+
+		@Override
+		protected void after(Context c, String next) {
+			//client.getConnectionManager().shutdown();
     		progress.setVisibility(View.INVISIBLE);
-    	}
+    		time_display.setText(next);
+		}
+
+		@Override
+		protected void handleError(Context c, Exception e) {
+			
+		}
     }
     
     public HashMap<String, Line> parseLine(XmlPullParser parser) throws XmlPullParserException, IOException {
