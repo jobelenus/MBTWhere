@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
-	<ViewFlipper android:id="@+id/lines" android:layout_width="fill_parent" android:layout_height="fill_parent" >
+	<com.af.mbtwhere.HorizontalPager android:id="@+id/lines" android:layout_width="fill_parent" android:layout_height="fill_parent" >
 		<LinearLayout android:id="@+id/red_line" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
 			<Spinner android:id="@+id/spinner_red_start" android:layout_width="fill_parent" android:layout_height="wrap_content" android:drawSelectorOnTop="true"/>
 			<Spinner android:id="@+id/spinner_red_end" android:layout_width="fill_parent" android:layout_height="wrap_content" android:drawSelectorOnTop="true"/>
@@ -15,5 +15,5 @@
 			<ProgressBar android:id="@+id/orange_progress" android:indeterminateOnly="true" android:progressDrawable="@android:drawable/progress_horizontal" android:layout_height="30dip" android:layout_width="30dip"/>
 			<TextView xmlns:android="http://schemas.android.com/apk/res/android" android:gravity="center" android:id="@+id/orange_display" android:layout_width="fill_parent" android:layout_height="wrap_content" />
 		</LinearLayout>
-	</ViewFlipper>
+	</com.af.mbtwhere.HorizontalPager>
 </LinearLayout>

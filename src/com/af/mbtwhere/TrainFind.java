@@ -39,7 +39,7 @@ import android.os.AsyncTask;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-public class TrainFind extends Activity implements OnGestureListener {
+public class TrainFind extends Activity {
 	private static final String TAG = "MBTWhere";
 	private static final String red_feed = "http://developer.mbta.com/Data/red.json";
 	private static final String orange_feed = "http://developer.mbta.com/Data/orange.json";
@@ -47,7 +47,7 @@ public class TrainFind extends Activity implements OnGestureListener {
     protected Spinner spin_start;
     protected Spinner spin_end;
     protected TextView time_display;
-    protected ViewFlipper flipper;
+    protected HorizontalPager pager;
     protected Button button;
     protected String[] red_stations;
     protected String red_start = "";
@@ -69,8 +69,7 @@ public class TrainFind extends Activity implements OnGestureListener {
         	Log.v(TAG, "io exception" + e);
         }
         
-        gestureScanner = new GestureDetector(this);
-        flipper = (ViewFlipper)findViewById(R.id.lines);
+        pager = (HorizontalPager)findViewById(R.id.lines);
         spin_start = (Spinner)findViewById(R.id.spinner_red_start);
         spin_end = (Spinner)findViewById(R.id.spinner_red_end);
         button = (Button)findViewById(R.id.find_red);
@@ -125,31 +124,17 @@ public class TrainFind extends Activity implements OnGestureListener {
         spin_end.setAdapter(aa_start);
     }
     
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-    	if (velocityX > 0) {
-    		flipper.showNext();
-    	} else {
-    		flipper.showPrevious();
-    	}
-        return true;
-    }
-    
-    public boolean onTouchEvent(MotionEvent me) {
-    	return gestureScanner.onTouchEvent(me);
-    }
-    public boolean onDown(MotionEvent e) {
-    	return true;
-    }
-    public void onLongPress(MotionEvent e) {
-    }
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-    	return true;
-    }
-    public void onShowPress(MotionEvent e) {	
-    }
-    public boolean onSingleTapUp(MotionEvent e) {
-    	return true;
-    }
+    private final HorizontalPager.OnScreenSwitchListener onScreenSwitchListener =
+        new HorizontalPager.OnScreenSwitchListener() {
+            public void onScreenSwitched(final int screen) {
+                /*
+                 * this method is executed if a screen has been activated, i.e. the screen is
+                 * completely visible and the animation has stopped (might be useful for
+                 * removing / adding new views)
+                 */
+                Log.v(TAG, "switched to screen: " + screen);
+            }
+        };
     
     class GetLineFeed extends BetterAsyncTask<String, Void, String> {
 		HttpClient client = null;
