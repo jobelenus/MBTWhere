@@ -1,64 +1,32 @@
 package com.af.mbtwhere;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.ArrayList;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import com.github.droidfu.concurrent.BetterAsyncTask;
-
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 import android.os.Bundle;
-import android.widget.ViewFlipper;
-import android.os.AsyncTask;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
+import com.af.mbtwhere.LineLayout;
 
 public class TrainFind extends Activity {
 	private static final String TAG = "MBTWhere";
-	private static final String red_feed = "http://developer.mbta.com/Data/red.json";
-	private static final String orange_feed = "http://developer.mbta.com/Data/orange.json";
+	protected HashMap<String, String> feeds = new HashMap<String, String>();
 	protected HashMap<String, Line> lines = new HashMap<String, Line>();
-    protected Spinner spin_start;
-    protected Spinner spin_end;
-    protected TextView time_display;
-    protected HorizontalPager pager;
-    protected Button button;
-    protected String[] red_stations;
-    protected String red_start = "";
-    protected String red_end = "";
-    protected ProgressBar progress;
-    private GestureDetector gestureScanner;
+	protected LineLayout[] linePanels;
+	HorizontalPager pager;
 	
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.main);
+        
+        feeds.put("red", "http://developer.mbta.com/Data/red.json");
+        feeds.put("orange", "http://developer.mbta.com/Data/orange.json");
+        feeds.put("blue", "http://developer.mbta.com/Data/blue.json");
         
         XmlPullParser xpp = getResources().getXml(R.xml.stations);
         try {
@@ -68,60 +36,18 @@ public class TrainFind extends Activity {
         } catch(IOException e) {
         	Log.v(TAG, "io exception" + e);
         }
-        
         pager = (HorizontalPager)findViewById(R.id.lines);
-        spin_start = (Spinner)findViewById(R.id.spinner_red_start);
-        spin_end = (Spinner)findViewById(R.id.spinner_red_end);
-        button = (Button)findViewById(R.id.find_red);
-        time_display = (TextView)findViewById(R.id.red_display);
-        progress = (ProgressBar)findViewById(R.id.red_progress);
-        progress.setVisibility(View.INVISIBLE);
-        
-        red_stations = ((Line)lines.get("red")).getStationsByName();
-        //init for unchanging spinners
-        red_start = red_stations[0];
-        red_end = red_stations[0];
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	String route = ((Line) lines.get("red")).getCodeFor(red_start, red_end);
-            	Log.v(TAG, "start="+red_start+", end="+red_end);
-            	if(red_start.equals(red_end)) {
-            		time_display.setText(R.string.already_there);
-            	} else {
-	            	Log.v(TAG, "route="+route);
-	            	progress.setVisibility(View.VISIBLE);
-	            	time_display.setText("");
-	            	new GetLineFeed(v.getContext()).execute(red_feed, route);
-            	}
-            }
-        });
-        
-        spin_start.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-            	//apparently this runs in the context of the activity, w00t
-            	red_start = red_stations[position];
-            }
-            
-            public void onNothingSelected(AdapterView<?> parent) {
-            	red_start = "";
-            }   	
-		});
-        spin_end.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-            	//apparently this runs in the context of the activity, w00t
-            	red_end = red_stations[position];
-            }
-            
-            public void onNothingSelected(AdapterView<?> parent) {
-            	red_end = "";
-            }   	
-		});
-        ArrayAdapter<String> aa_start = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, red_stations);
-        aa_start.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spin_start.setAdapter(aa_start);
-        ArrayAdapter<String> aa_end = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, red_stations);
-        aa_end.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spin_end.setAdapter(aa_start);
+        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        linePanels = new LineLayout[lines.size()];
+        int i = 0;
+        for(Line line : lines.values()) {
+        	LineLayout linePanel = new LineLayout(this, feeds.get(line.name), line);
+        	inflater.inflate(R.layout.picker, linePanel);
+        	linePanels[i] = linePanel;
+        	pager.addView(linePanel);
+        	linePanel.setup();
+        	i++;
+        }
     }
     
     private final HorizontalPager.OnScreenSwitchListener onScreenSwitchListener =
@@ -132,88 +58,8 @@ public class TrainFind extends Activity {
                  * completely visible and the animation has stopped (might be useful for
                  * removing / adding new views)
                  */
-                Log.v(TAG, "switched to screen: " + screen);
             }
         };
-    
-    class GetLineFeed extends BetterAsyncTask<String, Void, String> {
-		HttpClient client = null;
-		
-    	public GetLineFeed(Context c) {
-			super(c);
-		}
-    	
-    	public String combine(String[] s, String glue) {
-    	  int k=s.length;
-    	  if (k==0) {
-    	    return null;
-    	  }
-    	  StringBuilder out=new StringBuilder();
-    	  out.append(s[0]);
-    	  for (int x=1;x<k;++x) {
-    	    out.append(glue).append(s[x]);
-    	  }
-    	  return out.toString();
-    	}
-    	
-    	@Override
-    	protected String doCheckedInBackground(Context c, String... vargs) {
-    		HttpClient client = new DefaultHttpClient();
-    		String feed_url = vargs[0];
-    		String route_code = vargs[1];
-    		HttpGet getMethod = new HttpGet(feed_url);
-    		try {
-    			ResponseHandler<String> responseHandler = new BasicResponseHandler();
-    			String responseBody = client.execute(getMethod, responseHandler);
-    			JSONArray records = new JSONArray(responseBody);
-    			for (int i = 0; i < records.length(); ++i) {
-    			    JSONObject record = records.getJSONObject(i);
-    			    Log.v(TAG, "record="+record);
-    			    String this_code = record.getString("PlatformKey");
-    			    String this_type = record.getString("InformationType");
-    			    if(this_code.equals(route_code) && "Predicted".equals(this_type)) {
-    			    	String time_remaining;
-    			    	String[] remaining = record.getString("TimeRemaining").split(":");
-    			    	String[] display_time = new String[2];
-    			    	if("00".equals(remaining[0])) { //reformat time display to get rid of hours
-    			    		display_time[0] = remaining[1];
-    			    		display_time[1] = remaining[2]; 
-    			    	} else {
-    			    		display_time = remaining;
-    			    	}
-    			    	time_remaining = combine(display_time, ":");
-	    			    String label = getString(R.string.expecting_train)+" "+time_remaining;
-	    			   	Log.v(TAG, "label="+label);
-    			    	return label;
-    			    }
-    			}
-    			return getString(R.string.shrug);
-    		} catch(Throwable t) {
-    			Log.v(TAG, ""+t);
-    			//TODO: errors need to be reported
-    			//Toast.makeText(this, "Request failed: "+t.toString(), Toast.LENGTH_LONG).show();
-    		}
-    		return null;
-    	}
-    	
-    	@Override
-    	//this gets executed on the UI thread, so don't clog it up
-    	protected void onProgressUpdate(Void... junk) {
-    		
-    	}
-
-		@Override
-		protected void after(Context c, String next) {
-			//client.getConnectionManager().shutdown();
-    		progress.setVisibility(View.INVISIBLE);
-    		time_display.setText(next);
-		}
-
-		@Override
-		protected void handleError(Context c, Exception e) {
-			
-		}
-    }
     
     public HashMap<String, Line> parseLine(XmlPullParser parser) throws XmlPullParserException, IOException {
     	HashMap<String, Line> lines = new HashMap<String, Line>();

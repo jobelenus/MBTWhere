@@ -14,22 +14,17 @@ public final class R {
         public static final int icon=0x7f020000;
     }
     public static final class id {
-        public static final int find_orange=0x7f06000a;
-        public static final int find_red=0x7f060004;
+        public static final int display=0x7f060006;
+        public static final int end=0x7f060003;
+        public static final int find=0x7f060004;
+        public static final int line=0x7f060001;
         public static final int lines=0x7f060000;
-        public static final int orange_display=0x7f06000c;
-        public static final int orange_line=0x7f060007;
-        public static final int orange_progress=0x7f06000b;
-        public static final int red_display=0x7f060006;
-        public static final int red_line=0x7f060001;
-        public static final int red_progress=0x7f060005;
-        public static final int spinner_orange_end=0x7f060009;
-        public static final int spinner_orange_start=0x7f060008;
-        public static final int spinner_red_end=0x7f060003;
-        public static final int spinner_red_start=0x7f060002;
+        public static final int progress=0x7f060005;
+        public static final int start=0x7f060002;
     }
     public static final class layout {
         public static final int main=0x7f030000;
+        public static final int picker=0x7f030001;
     }
     public static final class string {
         public static final int already_there=0x7f050005;
