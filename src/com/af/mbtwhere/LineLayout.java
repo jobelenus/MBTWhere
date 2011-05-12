@@ -1,13 +1,5 @@
 package com.af.mbtwhere;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import com.github.droidfu.concurrent.BetterAsyncTask;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -21,10 +13,10 @@ import android.widget.TextView;
 
 public class LineLayout extends LinearLayout {
 	public static final String TAG = "LineLayout";
-	String start_selection = "";
-	String end_selection = "";
-	String feed = "";
-	Line line;
+	private String start_selection = "";
+	private String end_selection = "";
+	private String feed = "";
+	private Line line;
 
 	public LineLayout(Context context, String url, Line thisLine) {
 		super(context);

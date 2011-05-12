@@ -7,14 +7,30 @@ public class Station {
 	public final String lat;
 	public final String lng;
 	public String flag;
-	public ArrayList<Route> inbound_routes = new ArrayList<Route>();
-	public ArrayList<Route> outbound_routes = new ArrayList<Route>();
+	private ArrayList<Route> inbound_routes = new ArrayList<Route>();
+	private ArrayList<Route> outbound_routes = new ArrayList<Route>();
 	
 	public Station(String name, String lat, String lng, String flag) {
 		this.name = name;
 		this.lat = lat;
 		this.lng = lng;
 		this.flag = flag;
+	}
+	
+	public void addInbound(Route r) {
+		inbound_routes.add(r);
+	}
+	
+	public void addOutbound(Route r) {
+		outbound_routes.add(r);
+	}
+	
+	public Route[] getInbound() {
+		return (Route[]) inbound_routes.toArray();
+	}
+	
+	public Route[] getOutbound() {
+		return (Route[]) outbound_routes.toArray();
 	}
 	
 	@Override public boolean equals(Object o) {

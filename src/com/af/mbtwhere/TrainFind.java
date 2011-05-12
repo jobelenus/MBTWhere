@@ -8,7 +8,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import java.util.HashMap;
 import com.af.mbtwhere.LineLayout;
 import com.af.mbtwhere.Route.Builder;
@@ -75,7 +74,7 @@ public class TrainFind extends Activity {
     				lines.put(line.name, line);
     			} else if("station".equals(tag)) {
     				if(line != null ) {
-    					line.stations.add(parseStation(parser));
+    					line.addStation(parseStation(parser));
     				} else {
     					throw new XmlPullParserException("Data Format Exception: Station tag precedes line tag");
     				}
@@ -103,9 +102,9 @@ public class TrainFind extends Activity {
     				}
     				Route r = b.build();
     				if("inbound".equals(tag)) {
-    					station.inbound_routes.add(r);
+    					station.addInbound(r);
     				} else {
-    					station.outbound_routes.add(r);
+    					station.addOutbound(r);
     				}
     			}
     		} else if(eventType == XmlPullParser.END_TAG) {

@@ -15,10 +15,10 @@ import android.view.View;
 import com.github.droidfu.concurrent.BetterAsyncTask;
 
 public class GetLineFeed extends BetterAsyncTask<String, Void, String> {
-	static String TAG = "GetLineFeed";
-	HttpClient client = null;
-	Context c;
-	LineLayout l;
+	public static String TAG = "GetLineFeed";
+	private HttpClient client = null;
+	private Context c;
+	private LineLayout l;
 	
 	public GetLineFeed(Context c, LineLayout l) { //TODO this is horrible
 		super(c);
