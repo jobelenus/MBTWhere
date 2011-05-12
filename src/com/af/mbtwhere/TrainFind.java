@@ -8,16 +8,18 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.widget.RadioGroup;
+
 import java.util.HashMap;
 import com.af.mbtwhere.LineLayout;
 import com.af.mbtwhere.Route.Builder;
 
 public class TrainFind extends Activity {
 	private static final String TAG = "MBTWhere";
-	protected HashMap<String, String> feeds = new HashMap<String, String>();
-	protected HashMap<String, Line> lines = new HashMap<String, Line>();
-	protected LineLayout[] linePanels;
-	HorizontalPager pager;
+	private final HashMap<String, String> feeds = new HashMap<String, String>();
+	private final HashMap<String, Line> lines = new HashMap<String, Line>();
+	private RadioGroup lineGroup;
+	private HorizontalPager pager;
 	
     @Override
     public void onCreate(Bundle icicle) {
@@ -30,20 +32,21 @@ public class TrainFind extends Activity {
         
         XmlPullParser xpp = getResources().getXml(R.xml.stations);
         try {
-        	lines = parseLine(xpp);
+        	parseLines(xpp);
         } catch(XmlPullParserException e) {
         	Log.v(TAG, "parsing exception" + e);
         } catch(IOException e) {
         	Log.v(TAG, "io exception" + e);
         }
+        lineGroup = (RadioGroup) findViewById(R.id.line_tabs);
+        lineGroup.setOnCheckedChangeListener(onCheckedChangedListener);
         pager = (HorizontalPager)findViewById(R.id.lines);
+        pager.setOnScreenSwitchListener(onScreenSwitchListener);
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        linePanels = new LineLayout[lines.size()];
         int i = 0;
         for(Line line : lines.values()) {
         	LineLayout linePanel = new LineLayout(this, feeds.get(line.name), line);
         	inflater.inflate(R.layout.picker, linePanel);
-        	linePanels[i] = linePanel;
         	pager.addView(linePanel);
         	linePanel.setup();
         	i++;
@@ -53,16 +56,43 @@ public class TrainFind extends Activity {
     private final HorizontalPager.OnScreenSwitchListener onScreenSwitchListener =
         new HorizontalPager.OnScreenSwitchListener() {
             public void onScreenSwitched(final int screen) {
-                /*
-                 * this method is executed if a screen has been activated, i.e. the screen is
-                 * completely visible and the animation has stopped (might be useful for
-                 * removing / adding new views)
-                 */
+            	switch (screen) {
+                case 0:
+                    lineGroup.check(R.id.radio_red);
+                    break;
+                case 1:
+                    lineGroup.check(R.id.radio_orange);
+                    break;
+                case 2:
+                    lineGroup.check(R.id.radio_blue);
+                    break;
+                default:
+                    break;
+            	}
             }
-        };
+    };
+        
+    private final RadioGroup.OnCheckedChangeListener onCheckedChangedListener =
+    	new RadioGroup.OnCheckedChangeListener() {
+    		public void onCheckedChanged(final RadioGroup group, final int checkedId) {
+    			// Slide to the appropriate screen when the user checks a button.
+    			switch (checkedId) {
+    				case R.id.radio_red:
+    					pager.setCurrentScreen(0, true);
+    					break;
+                    case R.id.radio_orange:
+                    	pager.setCurrentScreen(1, true);
+                    	break;
+                    case R.id.radio_blue:
+                    	pager.setCurrentScreen(2, true);
+                    	break;
+                    default:
+                    	break;
+    			}
+    		}
+    };
     
-    public HashMap<String, Line> parseLine(XmlPullParser parser) throws XmlPullParserException, IOException {
-    	HashMap<String, Line> lines = new HashMap<String, Line>();
+    private void parseLines(XmlPullParser parser) throws XmlPullParserException, IOException {
     	int eventType = parser.getEventType();
     	Line line = null;
     	while (eventType != XmlPullParser.END_DOCUMENT) {
@@ -82,10 +112,9 @@ public class TrainFind extends Activity {
             }
     		eventType = parser.next();
     	}
-    	return lines;
     }
     
-    public Station parseStation(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private Station parseStation(XmlPullParser parser) throws XmlPullParserException, IOException {
     	Station station = new Station(parser.getAttributeValue(0), parser.getAttributeValue(1), parser.getAttributeValue(2), parser.getAttributeValue(3));
 		int eventType = parser.next();
 		String tag = "";

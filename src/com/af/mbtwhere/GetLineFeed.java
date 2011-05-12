@@ -71,7 +71,7 @@ public class GetLineFeed extends BetterAsyncTask<String, Void, String> {
 			    }
 			}
 			return c.getString(R.string.shrug);
-		} catch(Throwable t) {
+		} catch(Throwable t) { //TODO: don't catch everything, check connection first, and catch IOError
 			Log.v(TAG, ""+t);
 			//TODO: errors need to be reported
 			//Toast.makeText(this, "Request failed: "+t.toString(), Toast.LENGTH_LONG).show();

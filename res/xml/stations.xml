@@ -91,4 +91,8 @@
 			<outbound code="RBRAS" previous="RQUAS" next="NULL"/>
 		</station>
 	</line>
+	<line name="Orange">
+		<station name="Mass Ave" lat="0" lng="0" flag="-1">
+		</station>
+	</line>
 </lines>
