@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import java.util.HashMap;
 import com.af.mbtwhere.LineLayout;
+import com.af.mbtwhere.Route.Builder;
 
 public class TrainFind extends Activity {
 	private static final String TAG = "MBTWhere";
@@ -64,17 +65,20 @@ public class TrainFind extends Activity {
     public HashMap<String, Line> parseLine(XmlPullParser parser) throws XmlPullParserException, IOException {
     	HashMap<String, Line> lines = new HashMap<String, Line>();
     	int eventType = parser.getEventType();
-    	Line line = new Line();
+    	Line line = null;
     	while (eventType != XmlPullParser.END_DOCUMENT) {
     		String tag = "";
     		if(eventType == XmlPullParser.START_TAG) {
     			tag = parser.getName();
     			if("line".equals(tag)) {
-    				line = new Line();
-    				line.name = parser.getAttributeValue(0);
+    				line = new Line(parser.getAttributeValue(0));
     				lines.put(line.name, line);
     			} else if("station".equals(tag)) {
-    				line.stations.add(parseStation(parser));
+    				if(line != null ) {
+    					line.stations.add(parseStation(parser));
+    				} else {
+    					throw new XmlPullParserException("Data Format Exception: Station tag precedes line tag");
+    				}
     			}
             }
     		eventType = parser.next();
@@ -83,40 +87,26 @@ public class TrainFind extends Activity {
     }
     
     public Station parseStation(XmlPullParser parser) throws XmlPullParserException, IOException {
-    	Station station = new Station();
-		station.name = parser.getAttributeValue(0);
-		station.lat = parser.getAttributeValue(1);
-		station.lng = parser.getAttributeValue(2);
-		station.flag = parser.getAttributeValue(3);
+    	Station station = new Station(parser.getAttributeValue(0), parser.getAttributeValue(1), parser.getAttributeValue(2), parser.getAttributeValue(3));
 		int eventType = parser.next();
 		String tag = "";
     	while(true) { 
     		if(eventType == XmlPullParser.START_TAG) {
     			tag = parser.getName();
-    			if("outbound".equals(tag)) {
-    				Route new_out = new Route();
-    				new_out.code = parser.getAttributeValue(0);
-    				new_out.prev_code = parser.getAttributeValue(1);
-    				new_out.next_code = parser.getAttributeValue(2);
+    			if("outbound".equals(tag) || "inbound".equals(tag)) {
+    				Builder b  = new Route.Builder();
+    				b.code(parser.getAttributeValue(0)).prevCode(parser.getAttributeValue(1)).nextCode(parser.getAttributeValue(2)).station(station);
     				try {
-    					new_out.flag = parser.getAttributeValue(3);
+    					b.flag(parser.getAttributeValue(3));
     				} catch(Exception e) {
-    					new_out.flag = Line.ANY_BRANCH;
+    					b.flag(Line.ANY_BRANCH);
     				}
-    				new_out.station = station;
-    				station.outbound_routes.add(new_out);
-    			} else if("inbound".equals(tag)) {
-    				Route new_in = new Route();
-    				new_in.code = parser.getAttributeValue(0);
-    				new_in.prev_code = parser.getAttributeValue(1);
-    				new_in.next_code = parser.getAttributeValue(2);
-    				try {
-    					new_in.flag = parser.getAttributeValue(3);
-    				} catch(Exception e) {
-    					new_in.flag = Line.ANY_BRANCH;
+    				Route r = b.build();
+    				if("inbound".equals(tag)) {
+    					station.inbound_routes.add(r);
+    				} else {
+    					station.outbound_routes.add(r);
     				}
-    				new_in.station = station;
-    				station.inbound_routes.add(new_in);
     			}
     		} else if(eventType == XmlPullParser.END_TAG) {
     			tag = parser.getName();

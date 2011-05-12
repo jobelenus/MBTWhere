@@ -31,6 +31,10 @@ public class LineLayout extends LinearLayout {
 		feed = url;
 		line = thisLine;
 	}
+	
+	@Override public String toString() {
+		return "LineLayout: "+line.toString();
+	}
 
 	public Spinner getStart() {
 		return (Spinner)findViewById(R.id.start);
@@ -58,6 +62,7 @@ public class LineLayout extends LinearLayout {
         start_selection = stations[0];
         end_selection = stations[0];
         Button button = getFind();
+        final LineLayout that = this; //TODO this is horrible
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	String route = line.getCodeFor(start_selection, end_selection);
@@ -68,7 +73,7 @@ public class LineLayout extends LinearLayout {
 	            	Log.v(TAG, "route="+route);
 	            	getProgress().setVisibility(View.VISIBLE);
 	            	getDisplay().setText("");
-	            	new GetLineFeed(v.getContext()).execute(feed, route);
+	            	new GetLineFeed(v.getContext(), that).execute(feed, route); //TODO this is horrible
             	}
             }
         });
@@ -100,83 +105,4 @@ public class LineLayout extends LinearLayout {
         aa_end.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         getEnd().setAdapter(aa_end);
 	}
-	
-	class GetLineFeed extends BetterAsyncTask<String, Void, String> {
-		HttpClient client = null;
-		
-    	public GetLineFeed(Context c) {
-			super(c);
-		}
-    	
-    	public String combine(String[] s, String glue) {
-    	  int k=s.length;
-    	  if (k==0) {
-    	    return null;
-    	  }
-    	  StringBuilder out=new StringBuilder();
-    	  out.append(s[0]);
-    	  for (int x=1;x<k;++x) {
-    	    out.append(glue).append(s[x]);
-    	  }
-    	  return out.toString();
-    	}
-    	
-    	@Override
-    	protected String doCheckedInBackground(Context c, String... vargs) {
-    		HttpClient client = new DefaultHttpClient();
-    		String feed_url = vargs[0];
-    		String route_code = vargs[1];
-    		HttpGet getMethod = new HttpGet(feed_url);
-    		try {
-    			ResponseHandler<String> responseHandler = new BasicResponseHandler();
-    			String responseBody = client.execute(getMethod, responseHandler);
-    			JSONArray records = new JSONArray(responseBody);
-    			for (int i = 0; i < records.length(); ++i) {
-    			    JSONObject record = records.getJSONObject(i);
-    			    Log.v(TAG, "record="+record);
-    			    String this_code = record.getString("PlatformKey");
-    			    String this_type = record.getString("InformationType");
-    			    if(this_code.equals(route_code) && "Predicted".equals(this_type)) {
-    			    	String time_remaining;
-    			    	String[] remaining = record.getString("TimeRemaining").split(":");
-    			    	String[] display_time = new String[2];
-    			    	if("00".equals(remaining[0])) { //reformat time display to get rid of hours
-    			    		display_time[0] = remaining[1];
-    			    		display_time[1] = remaining[2]; 
-    			    	} else {
-    			    		display_time = remaining;
-    			    	}
-    			    	time_remaining = combine(display_time, ":");
-	    			    String label = getContext().getString(R.string.expecting_train)+" "+time_remaining;
-	    			   	Log.v(TAG, "label="+label);
-    			    	return label;
-    			    }
-    			}
-    			return getContext().getString(R.string.shrug);
-    		} catch(Throwable t) {
-    			Log.v(TAG, ""+t);
-    			//TODO: errors need to be reported
-    			//Toast.makeText(this, "Request failed: "+t.toString(), Toast.LENGTH_LONG).show();
-    		}
-    		return null;
-    	}
-    	
-    	@Override
-    	//this gets executed on the UI thread, so don't clog it up
-    	protected void onProgressUpdate(Void... junk) {
-    		
-    	}
-
-		@Override
-		protected void after(Context c, String next) {
-			//client.getConnectionManager().shutdown();
-    		getProgress().setVisibility(View.INVISIBLE);
-    		getDisplay().setText(next);
-		}
-
-		@Override
-		protected void handleError(Context c, Exception e) {
-			
-		}
-    }
 }

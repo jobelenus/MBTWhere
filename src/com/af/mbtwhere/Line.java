@@ -5,14 +5,33 @@ import java.util.ArrayList;
 import android.util.Log;
 
 public class Line {
-	String name;
-	final static int ANY = 0;
-	final static int INBOUND = 1;
-	final static int OUTBOUND = 2;
-	static final String ANY_BRANCH = "-1";
-	static final String BRAINTREE_BRANCH = "0";
-	static final String ASHMONT_BRANCH = "1";
-	ArrayList<Station> stations = new ArrayList<Station>();
+	public final String name;
+	public final static int ANY = 0;
+	public final static int INBOUND = 1;
+	public final static int OUTBOUND = 2;
+	public final static String ANY_BRANCH = "-1";
+	public final static String BRAINTREE_BRANCH = "0";
+	public final static String ASHMONT_BRANCH = "1";
+	public ArrayList<Station> stations = new ArrayList<Station>();
+	
+	public Line(String name) {
+		this.name = name;
+	}
+	
+	@Override public boolean equals(Object o) {
+		if (!(o instanceof Line)) {
+			return false;
+		}
+		Line l = (Line)o; return l.name == name;
+	}
+	
+	@Override public int hashCode() {
+		return name.hashCode();
+	}
+	
+	@Override public String toString() {
+		return name;
+	}
 	
 	public String[] getStationsByName() {
 		String[] ret = new String[stations.size()];
@@ -25,7 +44,7 @@ public class Line {
 	
 	public Station getStation(String name) {
 		for(Station station : stations) {
-			if(name.equals(station.name)) {
+			if(this.equals(station)) {
 				return station;
 			}
 		}
@@ -72,15 +91,15 @@ public class Line {
 	}
 	
 	public Route nextOutboundTo(Station start, Station end) {
-		if(start.name.equals(end.name)) {
+		if(start.equals(end)) {
 			return start.outbound_routes.get(0); //doesn't matter which, since we are referencing `code` which is the same for all outbound routes
 		} else {
 			for(Route route : start.outbound_routes) {
-				if(route.next_code != null && route.next_code.length() > 0 && !"NULL".equals(route.next_code) && (route.flag == Line.ANY_BRANCH || route.flag == end.flag)) {
-					Station next_station = getStationByCode(route.next_code, OUTBOUND);
-					if(next_station==null) {
+				if(route.is_on(end.flag)) {
+					Station next_station = getStationByCode(route.nextCode, OUTBOUND);
+					if(next_station == null) {
 						Log.v("MBTLine", "flipping from outbound to inbound");
-						next_station = getStationByCode(route.next_code, INBOUND);
+						next_station = getStationByCode(route.nextCode, INBOUND);
 						return nextInboundTo(next_station, end);
 					} else {
 						return nextOutboundTo(next_station, end);
@@ -92,15 +111,15 @@ public class Line {
 	}
 	
 	public Route nextInboundTo(Station start, Station end) {
-		if(start.name.equals(end.name)) {
+		if(start.equals(end)) {
 			return start.inbound_routes.get(0);
 		} else {
 			for(Route route : start.inbound_routes) {
-				if(route.next_code != null && route.next_code.length() > 0 && !"NULL".equals(route.next_code) && (route.flag == Line.ANY_BRANCH || route.flag == end.flag)) {
-					Station next_station = getStationByCode(route.next_code, INBOUND);
+				if(route.is_on(end.flag)) {
+					Station next_station = getStationByCode(route.nextCode, INBOUND);
 					if(next_station == null) {
 						Log.v("MBTLine", "flipping from inbound to outbound");
-						next_station = getStationByCode(route.next_code, OUTBOUND);
+						next_station = getStationByCode(route.nextCode, OUTBOUND);
 						return nextOutboundTo(next_station, end);
 					}
 					return nextInboundTo(next_station, end);
