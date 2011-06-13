@@ -44,12 +44,16 @@ public class TrainFind extends Activity {
         pager.setOnScreenSwitchListener(onScreenSwitchListener);
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         int i = 0;
-        for(Line line : lines.values()) {
-        	LineLayout linePanel = new LineLayout(this, feeds.get(line.name), line);
-        	inflater.inflate(R.layout.picker, linePanel);
-        	pager.addView(linePanel);
-        	linePanel.setup();
-        	i++;
+        String[] lineOrder = {"red","orange","blue"};
+        for(String sline : lineOrder) {
+        	Line line = lines.get(sline);
+        	if(line != null) {
+	        	LineLayout linePanel = new LineLayout(this, feeds.get(line.name), line);
+	        	inflater.inflate(R.layout.picker, linePanel);
+	        	pager.addView(linePanel);
+	        	linePanel.setup();
+	        	i++;
+        	}
         }
     }
     
