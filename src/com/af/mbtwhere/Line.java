@@ -53,7 +53,7 @@ public class Line {
 	
 	public Station getStation(String name) {
 		for(Station station : stations) {
-			if(this.equals(station)) {
+			if(name.equals(station.name)) {
 				return station;
 			}
 		}

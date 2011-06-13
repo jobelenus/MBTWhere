@@ -26,11 +26,11 @@ public class Station {
 	}
 	
 	public Route[] getInbound() {
-		return (Route[]) inbound_routes.toArray();
+		return (Route[]) inbound_routes.toArray(new Route[inbound_routes.size()]);
 	}
 	
 	public Route[] getOutbound() {
-		return (Route[]) outbound_routes.toArray();
+		return (Route[]) outbound_routes.toArray(new Route[outbound_routes.size()]);
 	}
 	
 	@Override public boolean equals(Object o) {
