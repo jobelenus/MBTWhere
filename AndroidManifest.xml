@@ -14,6 +14,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+		<activity android:name=".ServiceUpdate"
+				android:label="@string/get_service">		
+		</activity>
     </application>
 </manifest>

@@ -20,7 +20,7 @@ public class GetLineFeed extends BetterAsyncTask<String, Void, String> {
 	private Context c;
 	private LineLayout l;
 	
-	public GetLineFeed(Context c, LineLayout l) { //TODO this is horrible
+	public GetLineFeed(Context c, LineLayout l) {
 		super(c);
 		this.c = c;
 		this.l = l;
@@ -41,7 +41,7 @@ public class GetLineFeed extends BetterAsyncTask<String, Void, String> {
 	
 	@Override
 	protected String doCheckedInBackground(Context c, String... vargs) {
-		HttpClient client = new DefaultHttpClient();
+		client = new DefaultHttpClient();
 		String feed_url = vargs[0];
 		String route_code = vargs[1];
 		HttpGet getMethod = new HttpGet(feed_url);

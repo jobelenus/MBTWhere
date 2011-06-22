@@ -5,6 +5,7 @@
 	<Spinner android:id="@+id/end" android:layout_width="fill_parent" android:layout_height="wrap_content" android:drawSelectorOnTop="true"/>
 	<Button android:id="@+id/find" android:text="@string/find_train" android:layout_width="fill_parent" android:layout_height="wrap_content"/>
 	<ProgressBar android:id="@+id/progress" android:indeterminateOnly="true" android:progressDrawable="@android:drawable/progress_horizontal" android:layout_height="30dip" android:layout_width="30dip"/>
-	<TextView xmlns:android="http://schemas.android.com/apk/res/android" android:gravity="center" android:id="@+id/display" android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	<TextView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_weight="3" android:gravity="center" android:id="@+id/display" android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	<Button android:id="@+id/service" android:text="@string/get_service" android:layout_width="fill_parent" android:layout_height="wrap_content"/>
 </LinearLayout>
 </merge>

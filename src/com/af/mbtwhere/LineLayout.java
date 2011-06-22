@@ -40,6 +40,10 @@ public class LineLayout extends LinearLayout {
 		return (TextView)findViewById(R.id.display);
 	}
 	
+	public Button getService() {
+		return (Button)findViewById(R.id.service);
+	}
+	
 	public ProgressBar getProgress() {
 		return (ProgressBar)findViewById(R.id.progress);
 	}
@@ -54,7 +58,9 @@ public class LineLayout extends LinearLayout {
         start_selection = stations[0];
         end_selection = stations[0];
         Button button = getFind();
+        Button service = getService();
         final LineLayout that = this; //TODO this is horrible
+        
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	String route = line.getCodeFor(start_selection, end_selection);
@@ -69,6 +75,14 @@ public class LineLayout extends LinearLayout {
             	}
             }
         });
+        
+        service.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				getProgress().setVisibility(View.VISIBLE);
+				getDisplay().setText("");
+				new ServiceFeed(v.getContext(), that).execute(line.name);
+			}
+		});
         
         getStart().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {

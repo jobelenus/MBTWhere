@@ -24,17 +24,21 @@ public final class R {
         public static final int radio_blue=0x7f060003;
         public static final int radio_orange=0x7f060002;
         public static final int radio_red=0x7f060001;
+        public static final int service=0x7f06000b;
         public static final int start=0x7f060006;
     }
     public static final class layout {
-        public static final int main=0x7f030000;
-        public static final int picker=0x7f030001;
+        public static final int list_updates=0x7f030000;
+        public static final int main=0x7f030001;
+        public static final int picker=0x7f030002;
     }
     public static final class string {
         public static final int already_there=0x7f050005;
         public static final int app_name=0x7f050000;
         public static final int expecting_train=0x7f050002;
         public static final int find_train=0x7f050001;
+        public static final int get_service=0x7f050006;
+        public static final int no_updates=0x7f050007;
         public static final int now_train=0x7f050003;
         public static final int shrug=0x7f050004;
     }

@@ -6,4 +6,6 @@
     <string name="now_train">It\'s gonna to be a photo finish!</string>
     <string name="shrug">SHRUG?!</string>
     <string name="already_there">You\'ve arrived!</string>
+    <string name="get_service">Service Updates</string>
+    <string name="no_updates">No updates!</string>
 </resources>
