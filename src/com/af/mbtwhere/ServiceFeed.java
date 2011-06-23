@@ -35,9 +35,6 @@ public class ServiceFeed extends BetterAsyncTask<String, Void, ArrayList<String>
 	private final HashMap<String, String> services = new HashMap<String, String>();
 	private Context c;
 	private LineLayout l;
-	private static final byte UTF8_BOM_1 = (byte) 0xef;
-	private static final byte UTF8_BOM_2 = (byte) 0xbb;
-	private static final byte UTF8_BOM_3 = (byte) 0xbf;
 	
 	public ServiceFeed(Context c, LineLayout l) {
 		super(c);

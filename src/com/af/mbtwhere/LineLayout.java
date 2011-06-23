@@ -1,5 +1,7 @@
 package com.af.mbtwhere;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 
 public class LineLayout extends LinearLayout {
 	public static final String TAG = "LineLayout";
+	private static final Integer NUM_RECORDS = 1;
 	private String start_selection = "";
 	private String end_selection = "";
 	private String feed = "";
@@ -38,6 +41,10 @@ public class LineLayout extends LinearLayout {
 	
 	public TextView getDisplay() {
 		return (TextView)findViewById(R.id.display);
+	}
+	
+	public void setDisplay(ArrayList<String> times) {
+		getDisplay().setText(times.get(NUM_RECORDS-1));
 	}
 	
 	public Button getService() {
@@ -71,7 +78,7 @@ public class LineLayout extends LinearLayout {
 	            	Log.v(TAG, "route="+route);
 	            	getProgress().setVisibility(View.VISIBLE);
 	            	getDisplay().setText("");
-	            	new GetLineFeed(v.getContext(), that).execute(feed, route); //TODO this is horrible
+	            	new GetLineFeed(v.getContext(), that).execute(feed, route, NUM_RECORDS.toString());
             	}
             }
         });
