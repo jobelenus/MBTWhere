@@ -1,10 +1,7 @@
 package com.af.mbtwhere;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,12 +17,10 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import com.af.mbtwhere.Route.Builder;
 import com.github.droidfu.concurrent.BetterAsyncTask;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -55,7 +50,7 @@ public class ServiceFeed extends BetterAsyncTask<String, Void, ArrayList<String>
 	        factory.setNamespaceAware(true);
 	        xpp = factory.newPullParser();
 	        xpp.setInput(new StringReader (xml));
-        	messages = this.parseFeed(xpp);
+        	messages = ServiceFeed.parseFeed(xpp);
         } catch(XmlPullParserException e) {
         	Log.v(TAG, "parsing exception" + e);
         } catch(IOException e) {
