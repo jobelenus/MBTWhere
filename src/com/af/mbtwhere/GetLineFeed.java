@@ -2,6 +2,7 @@ package com.af.mbtwhere;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -20,9 +21,12 @@ import com.github.droidfu.concurrent.BetterAsyncTask;
 
 public class GetLineFeed extends BetterAsyncTask<String, Void, ArrayList<String>> {
 	public static String TAG = "GetLineFeed";
+	private static long CACHE_TIMEOUT = 1*60;
 	private HttpClient client = null;
 	private Context c;
 	private LineLayout l;
+	private String cachedResponse = null;
+	private Date cachedTime = new Date();
 	
 	public GetLineFeed(Context c, LineLayout l) {
 		super(c);
@@ -44,16 +48,21 @@ public class GetLineFeed extends BetterAsyncTask<String, Void, ArrayList<String>
 	}
 	
 	protected String getFeed(String feed_url) {
-		HttpGet getMethod = new HttpGet(feed_url);
-		String responseBody = "";
-		try {
-			ResponseHandler<String> responseHandler = new BasicResponseHandler();
-			responseBody = client.execute(getMethod, responseHandler);
-			
-		} catch(IOException e) {
-			Log.v(TAG, "IOException: "+e);
+		Date now = new Date();
+		long diff = now.getTime() - cachedTime.getTime();
+		if(diff > CACHE_TIMEOUT || cachedResponse == null) {
+			HttpGet getMethod = new HttpGet(feed_url);
+			String responseBody = "";
+			try {
+				ResponseHandler<String> responseHandler = new BasicResponseHandler();
+				responseBody = client.execute(getMethod, responseHandler);
+				cachedResponse = responseBody;
+				cachedTime = new Date();
+			} catch(IOException e) {
+				Log.v(TAG, "IOException: "+e);
+			}
 		}
-		return responseBody;
+		return cachedResponse;
 	}
 	
 	protected ArrayList<String> findTime(String feed_url, String route_code, int numRecords) {
