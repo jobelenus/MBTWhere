@@ -8,4 +8,5 @@
     <string name="already_there">You\'ve arrived!</string>
     <string name="get_service">Service Updates</string>
     <string name="no_updates">No updates!</string>
+    <string name="getting_train">Trainspotting...</string>
 </resources>

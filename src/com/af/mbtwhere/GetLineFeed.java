@@ -119,7 +119,6 @@ public class GetLineFeed extends BetterAsyncTask<String, Void, ArrayList<String>
 	@Override
 	protected void after(Context c, ArrayList<String> next) {
 		//client.getConnectionManager().shutdown();
-		l.getProgress().setVisibility(View.INVISIBLE);
 		l.setDisplay(next);
 	}
 

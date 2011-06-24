@@ -149,7 +149,7 @@ public class ServiceFeed extends BetterAsyncTask<String, Void, ArrayList<String>
 	}
 	
 	protected void after(Context c, ArrayList<String> messages) {
-		l.getProgress().setVisibility(View.INVISIBLE);
+		l.stopProgress();
 		if(messages.size() == 0) {
 			Toast.makeText(c, R.string.no_updates, Toast.LENGTH_SHORT).show();
 		} else {

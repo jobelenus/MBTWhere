@@ -2,6 +2,7 @@ package com.af.mbtwhere;
 
 import java.util.ArrayList;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,7 @@ public class LineLayout extends LinearLayout {
 	private String end_selection = "";
 	private String feed = "";
 	private Line line;
+	private ProgressDialog progress = null;
 
 	public LineLayout(Context context, String url, Line thisLine) {
 		super(context);
@@ -45,14 +47,22 @@ public class LineLayout extends LinearLayout {
 	
 	public void setDisplay(ArrayList<String> times) {
 		getDisplay().setText(times.get(NUM_RECORDS-1));
+		stopProgress();
 	}
 	
 	public Button getService() {
 		return (Button)findViewById(R.id.service);
 	}
 	
-	public ProgressBar getProgress() {
-		return (ProgressBar)findViewById(R.id.progress);
+	public void stopProgress() {
+		if(progress != null) {
+			progress.dismiss();
+		}
+	}
+	
+	public void startProgress() {
+		Context c = getContext();
+		progress = ProgressDialog.show(c, "", c.getString(R.string.getting_train), true);
 	}
 	
 	public Button getFind() {
@@ -60,7 +70,7 @@ public class LineLayout extends LinearLayout {
 	}
 	
 	public void setup() {
-		getProgress().setVisibility(View.INVISIBLE);
+		stopProgress();
 		final String[] stations = line.getStationsByName();
         start_selection = stations[0];
         end_selection = stations[0];
@@ -76,7 +86,7 @@ public class LineLayout extends LinearLayout {
             		getDisplay().setText(R.string.already_there);
             	} else {
 	            	Log.v(TAG, "route="+route);
-	            	getProgress().setVisibility(View.VISIBLE);
+	            	startProgress();
 	            	getDisplay().setText("");
 	            	new GetLineFeed(v.getContext(), that).execute(feed, route, NUM_RECORDS.toString());
             	}
@@ -85,7 +95,7 @@ public class LineLayout extends LinearLayout {
         
         service.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				getProgress().setVisibility(View.VISIBLE);
+				startProgress();
 				getDisplay().setText("");
 				new ServiceFeed(v.getContext(), that).execute(line.name);
 			}
