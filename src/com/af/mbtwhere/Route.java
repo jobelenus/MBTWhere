@@ -55,6 +55,14 @@ public class Route {
 		return code.hashCode();
 	}
 	
+	public Station nextStation(Line l) {
+		return l.getStationByCode(nextCode);
+	}
+	
+	public Station prevStation(Line l) {
+		return l.getStationByCode(prevCode);
+	}
+	
 	public boolean is_on(String flag) {
 		return this.nextCode != null && this.nextCode.length() > 0 && !"NULL".equals(this.nextCode) && (this.flag == Line.ANY_BRANCH || this.flag.equals(flag));
 	}

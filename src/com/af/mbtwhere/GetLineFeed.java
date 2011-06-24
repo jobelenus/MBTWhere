@@ -15,18 +15,24 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.View;
 
 import com.github.droidfu.concurrent.BetterAsyncTask;
 
-public class GetLineFeed extends BetterAsyncTask<String, Void, ArrayList<String>> {
+public class GetLineFeed extends BetterAsyncTask<String, Void, ArrayList<JSONObject>> {
 	public static String TAG = "GetLineFeed";
 	private static long CACHE_TIMEOUT = 1*60;
 	private HttpClient client = null;
 	private Context c;
-	private LineLayout l;
+	private LineLayout l = null;
+	private StationLayout sl = null;
 	private String cachedResponse = null;
 	private Date cachedTime = new Date();
+	
+	public GetLineFeed(Context c, StationLayout l) {
+		super(c);
+		this.c = c;
+		this.sl = l;
+	}
 	
 	public GetLineFeed(Context c, LineLayout l) {
 		super(c);
@@ -34,17 +40,13 @@ public class GetLineFeed extends BetterAsyncTask<String, Void, ArrayList<String>
 		this.l = l;
 	}
 	
-	public String combine(String[] s, String glue) {
-	  int k = s.length;
-	  if (k == 0) {
-		  return null;
-	  }
-	  StringBuilder out=new StringBuilder();
-	  out.append(s[0]);
-	  for (int x = 1; x < k; ++x) {
-		  out.append(glue).append(s[x]);
-	  }
-	  return out.toString();
+	protected void setDisplay(ArrayList<JSONObject> feed) {
+		if(l != null) {
+			l.setDisplay(feed);
+		}
+		if(sl != null) {
+			sl.setDisplay(feed);
+		}
 	}
 	
 	protected String getFeed(String feed_url) {
@@ -72,23 +74,7 @@ public class GetLineFeed extends BetterAsyncTask<String, Void, ArrayList<String>
 			for (int i = 0; i < records.length(); ++i) {
 			    JSONObject record = records.getJSONObject(i);
 			    Log.v(TAG, "record="+record);
-			    String this_code = record.getString("PlatformKey");
-			    String this_type = record.getString("InformationType");
-			    if(this_code.equals(route_code) && "Predicted".equals(this_type)) {
-			    	String time_remaining;
-			    	String[] remaining = record.getString("TimeRemaining").split(":");
-			    	String[] display_time = new String[2];
-			    	if("00".equals(remaining[0])) { //reformat time display to get rid of hours
-			    		display_time[0] = remaining[1];
-			    		display_time[1] = remaining[2]; 
-			    	} else {
-			    		display_time = remaining;
-			    	}
-			    	time_remaining = combine(display_time, ":");
-    			    String label = c.getString(R.string.expecting_train)+" "+time_remaining;
-    			   	Log.v(TAG, "label="+label);
-			    	times.add(label);
-			    }
+			    
 			}
 		//TODO: errors need to be reported	
 		} catch(JSONException e) {
@@ -100,29 +86,37 @@ public class GetLineFeed extends BetterAsyncTask<String, Void, ArrayList<String>
 		return times;
 	}
 	
-	protected ArrayList<String> doCheckedInBackground(Context c, String... vargs) {
-		client = new DefaultHttpClient();
-		String feedUrl = vargs[0];
-		String routeCode = vargs[1];
-		int numRoutes = Integer.parseInt(vargs[2]);
-		
-		ArrayList<String> times = findTime(feedUrl, routeCode, numRoutes);
-		return times;
+	protected ArrayList<JSONObject> findTime(String feedUrl) {
+		ArrayList<JSONObject> feed = new ArrayList<JSONObject>();
+		try {
+			JSONArray records = new JSONArray(getFeed(feedUrl));
+			for (int i = 0; i < records.length(); ++i) {
+			    JSONObject record = records.getJSONObject(i);
+			    Log.v(TAG, "record="+record);
+			    feed.add(record);
+			}
+			//TODO: errors need to be reported	
+		} catch(JSONException e) {
+			Log.v(TAG, "JSONException: "+e);
+		}
+		return feed;
 	}
 	
-	@Override
+	protected ArrayList<JSONObject> doCheckedInBackground(Context c, String... vargs) {
+		client = new DefaultHttpClient();
+		String feedUrl = vargs[0];
+		return findTime(feedUrl);
+	}
+	
 	//this gets executed on the UI thread, so don't clog it up
 	protected void onProgressUpdate(Void... junk) {
 		
 	}
 
-	@Override
-	protected void after(Context c, ArrayList<String> next) {
-		//client.getConnectionManager().shutdown();
-		l.setDisplay(next);
+	protected void after(Context c, ArrayList<JSONObject> next) {
+		setDisplay(next);
 	}
 
-	@Override
 	protected void handleError(Context c, Exception e) {
 		
 	}

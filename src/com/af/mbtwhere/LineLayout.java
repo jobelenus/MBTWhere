@@ -2,6 +2,9 @@ package com.af.mbtwhere;
 
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
@@ -19,18 +22,31 @@ public class LineLayout extends LinearLayout {
 	private static final Integer NUM_RECORDS = 1;
 	private String start_selection = "";
 	private String end_selection = "";
+	private String route_code = null;
 	private String feed = "";
 	private Line line;
+	private Context c;
 	private ProgressDialog progress = null;
+	public static final int xmlFile = R.layout.picker;
 
 	public LineLayout(Context context, String url, Line thisLine) {
 		super(context);
+		c = context;
 		feed = url;
 		line = thisLine;
 	}
 	
-	@Override public String toString() {
-		return "LineLayout: "+line.toString();
+	public String combine(String[] s, String glue) {
+	  int k = s.length;
+	  if (k == 0) {
+		  return null;
+	  }
+	  StringBuilder out=new StringBuilder();
+	  out.append(s[0]);
+	  for (int x = 1; x < k; ++x) {
+		  out.append(glue).append(s[x]);
+	  }
+	  return out.toString();
 	}
 
 	public Spinner getStart() {
@@ -45,8 +61,40 @@ public class LineLayout extends LinearLayout {
 		return (TextView)findViewById(R.id.display);
 	}
 	
-	public void setDisplay(ArrayList<String> times) {
-		getDisplay().setText(times.get(NUM_RECORDS-1));
+	public String reformatTime(String[] time) {
+    	String[] display_time = new String[2];
+		if("00".equals(time[0])) { //reformat time display to get rid of hours
+    		display_time[0] = time[1];
+    		display_time[1] = time[2]; 
+    	} else {
+    		display_time = time;
+    	}
+		String time_remaining = combine(display_time, ":");
+		return time_remaining;
+	}
+	
+	public void setDisplay(ArrayList<JSONObject> feed) {
+		boolean found = false;
+		try {
+			for(JSONObject record : feed) {
+				String this_code = record.getString("PlatformKey");
+			    String this_type = record.getString("InformationType");
+			    if(this_code.equals(route_code) && "Predicted".equals(this_type)) {
+			    	String time_remaining;
+			    	String[] remaining = record.getString("TimeRemaining").split(":");
+			    	time_remaining = reformatTime(remaining);
+				    String label = c.getString(R.string.expecting_train)+" "+time_remaining;
+				   	Log.v(TAG, "label="+label);
+				   	getDisplay().setText(label);
+				   	found = true;
+			    }
+		    }
+		}  catch(JSONException e) {
+			Log.v(TAG, "JSONException: "+e);
+		}
+		if(!found) {
+			getDisplay().setText(R.string.shrug);
+		}
 		stopProgress();
 	}
 	
@@ -86,9 +134,10 @@ public class LineLayout extends LinearLayout {
             		getDisplay().setText(R.string.already_there);
             	} else {
 	            	Log.v(TAG, "route="+route);
+	            	route_code = route;
 	            	startProgress();
 	            	getDisplay().setText("");
-	            	new GetLineFeed(v.getContext(), that).execute(feed, route, NUM_RECORDS.toString());
+	            	new GetLineFeed(v.getContext(), that).execute(feed);
             	}
             }
         });
@@ -111,6 +160,7 @@ public class LineLayout extends LinearLayout {
             	start_selection = "";
             }   	
 		});
+        
         getEnd().setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
             	//apparently this runs in the context of the activity, w00t

@@ -49,7 +49,7 @@ public class TrainFind extends Activity {
         	Line line = lines.get(sline);
         	if(line != null) {
 	        	LineLayout linePanel = new LineLayout(this, feeds.get(line.name), line);
-	        	inflater.inflate(R.layout.picker, linePanel);
+	        	inflater.inflate(linePanel.xmlFile, linePanel);
 	        	pager.addView(linePanel);
 	        	linePanel.setup();
 	        	i++;

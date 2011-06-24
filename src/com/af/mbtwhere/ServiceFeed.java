@@ -23,22 +23,43 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class ServiceFeed extends BetterAsyncTask<String, Void, ArrayList<String>>{
 	public static String TAG = "ServiceFeed";
 	private final HashMap<String, String> services = new HashMap<String, String>();
 	private Context c;
-	private LineLayout l;
+	private LineLayout ll = null;
+	private StationLayout sl = null;
 	
 	public ServiceFeed(Context c, LineLayout l) {
 		super(c);
+		init(c);
+		this.ll = l;
+	}
+	
+	public ServiceFeed(Context c, StationLayout l) {
+		super(c);
+		init(c);
+		this.sl = l;
+	}
+	
+	protected void init(Context c) {
         services.put("red", "http://talerts.com/rssfeed/alertsrss.aspx?15");
         services.put("orange", "http://talerts.com/rssfeed/alertsrss.aspx?16");
         services.put("blue", "http://talerts.com/rssfeed/alertsrss.aspx?18");
         services.put("green", "http://talerts.com/rssfeed/alertsrss.aspx?17");
 		this.c = c;
-		this.l = l;
+	}
+	
+	protected void stopProgress() {
+		if(ll != null) {
+			ll.stopProgress();
+		}
+		if(sl != null) {
+			sl.stopProgress();
+		}
 	}
 	
 	public ArrayList<String> getServiceUpdate(String line) {
@@ -149,12 +170,12 @@ public class ServiceFeed extends BetterAsyncTask<String, Void, ArrayList<String>
 	}
 	
 	protected void after(Context c, ArrayList<String> messages) {
-		l.stopProgress();
+		stopProgress();
 		if(messages.size() == 0) {
 			Toast.makeText(c, R.string.no_updates, Toast.LENGTH_SHORT).show();
 		} else {
-			Intent i = new Intent(l.getContext(), ServiceUpdate.class).putStringArrayListExtra("com.af.mbtwhere.ServiceUpdates", messages);
-			l.getContext().startActivity(i);
+			Intent i = new Intent(c, ServiceUpdate.class).putStringArrayListExtra("com.af.mbtwhere.ServiceUpdates", messages);
+			c.startActivity(i);
 		}
 	}
 
