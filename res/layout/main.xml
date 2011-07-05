@@ -22,5 +22,8 @@
             android:text="Blue" />
     </RadioGroup>
 	<com.af.mbtwhere.HorizontalPager android:id="@+id/lines" android:layout_width="fill_parent" android:layout_height="fill_parent" >
+		<include android:id="@+id/red" layout="@layout/station_picker" />
+		<include android:id="@+id/orange" layout="@layout/station_picker" />
+		<include android:id="@+id/blue" layout="@layout/station_picker" />
 	</com.af.mbtwhere.HorizontalPager>
 </LinearLayout>

@@ -42,19 +42,24 @@ public class TrainFind extends Activity {
         lineGroup.setOnCheckedChangeListener(onCheckedChangedListener);
         pager = (HorizontalPager)findViewById(R.id.lines);
         pager.setOnScreenSwitchListener(onScreenSwitchListener);
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        int i = 0;
-        String[] lineOrder = {"red","orange","blue"};
-        for(String sline : lineOrder) {
-        	Line line = lines.get(sline);
-        	if(line != null) {
-	        	LineLayout linePanel = new LineLayout(this, feeds.get(line.name), line);
-	        	inflater.inflate(linePanel.xmlFile, linePanel);
-	        	pager.addView(linePanel);
-	        	linePanel.setup();
-	        	i++;
-        	}
-        }
+        
+        StationLayout redPanel = (StationLayout)findViewById(R.id.red);
+        Line redLine = lines.get("red");
+        redPanel.setLine(redLine);
+        redPanel.setFeed(feeds.get("red"));
+        redPanel.draw();
+        
+        StationLayout orangePanel = (StationLayout)findViewById(R.id.orange);
+        Line orangeLine = lines.get("orange");
+        orangePanel.setLine(orangeLine);
+        orangePanel.setFeed(feeds.get("orange"));
+        orangePanel.draw();
+        
+        StationLayout bluePanel = (StationLayout)findViewById(R.id.blue);
+        Line blueLine = lines.get("blue");
+        bluePanel.setLine(blueLine);
+        bluePanel.setFeed(feeds.get("blue"));
+        bluePanel.draw();
     }
     
     private final HorizontalPager.OnScreenSwitchListener onScreenSwitchListener =

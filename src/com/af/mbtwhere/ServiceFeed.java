@@ -152,8 +152,8 @@ public class ServiceFeed extends BetterAsyncTask<String, Void, ArrayList<String>
 		try {
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 			responseBody = client.execute(getMethod, responseHandler);
-		} catch(Throwable t) { //TODO: don't catch everything, check connection first, and catch IOError
-			Log.v(TAG, ""+t);
+		} catch(IOException e) { //TODO: don't catch everything, check connection first, and catch IOError
+			Log.v(TAG, "IOException "+e);
 		} finally {
 			String bomString = new String("ï»¿");
 			if(bomString.equals(responseBody.substring(0, bomString.length()))) {

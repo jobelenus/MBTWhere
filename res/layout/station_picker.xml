@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
-<LinearLayout android:id="@+id/line" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
+<com.af.mbtwhere.StationLayout android:id="@+id/line" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
 	<Spinner android:id="@+id/start" android:layout_width="fill_parent" android:layout_height="wrap_content" android:drawSelectorOnTop="true"/>
 	<Button android:id="@+id/find" android:text="@string/find_train" android:layout_width="fill_parent" android:layout_height="wrap_content"/>
 	<LinearLayout android:id="@+id/route_container" android:layout_weight="3" android:gravity="center" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"></LinearLayout>
 	<Button android:id="@+id/service" android:text="@string/get_service" android:layout_width="fill_parent" android:layout_height="wrap_content"/>
-</LinearLayout>
-</merge>
+</com.af.mbtwhere.StationLayout>

@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,13 +23,21 @@ public class LineLayout extends LinearLayout {
 	private static final Integer NUM_RECORDS = 1;
 	private String start_selection = "";
 	private String end_selection = "";
-	private String route_code = null;
-	private String feed = "";
-	private Line line;
-	private Context c;
-	private ProgressDialog progress = null;
+	protected String route_code = null;
+	protected String feed = "";
+	protected Line line;
+	protected Context c;
+	protected ProgressDialog progress = null;
 	public static final int xmlFile = R.layout.picker;
 
+	public LineLayout(Context context) {
+		super(context);
+	}
+	
+	public LineLayout(Context context,  AttributeSet attrs) { 
+        super(context, attrs);
+	}
+	
 	public LineLayout(Context context, String url, Line thisLine) {
 		super(context);
 		c = context;

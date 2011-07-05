@@ -1,6 +1,7 @@
 package com.af.mbtwhere;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -42,9 +43,11 @@ public class GetLineFeed extends BetterAsyncTask<String, Void, ArrayList<JSONObj
 	
 	protected void setDisplay(ArrayList<JSONObject> feed) {
 		if(l != null) {
+			Log.v(TAG, "set L");
 			l.setDisplay(feed);
 		}
 		if(sl != null) {
+			Log.v(TAG, "set SL");
 			sl.setDisplay(feed);
 		}
 	}
@@ -61,29 +64,11 @@ public class GetLineFeed extends BetterAsyncTask<String, Void, ArrayList<JSONObj
 				cachedResponse = responseBody;
 				cachedTime = new Date();
 			} catch(IOException e) {
-				Log.v(TAG, "IOException: "+e);
+				Log.v(TAG, "IOException: "+e+"feed: "+feed_url);
+				return "";
 			}
 		}
 		return cachedResponse;
-	}
-	
-	protected ArrayList<String> findTime(String feed_url, String route_code, int numRecords) {
-		ArrayList<String> times = new ArrayList<String>();
-		try {
-			JSONArray records = new JSONArray(getFeed(feed_url));
-			for (int i = 0; i < records.length(); ++i) {
-			    JSONObject record = records.getJSONObject(i);
-			    Log.v(TAG, "record="+record);
-			    
-			}
-		//TODO: errors need to be reported	
-		} catch(JSONException e) {
-			Log.v(TAG, "JSONException: "+e);
-		}
-		if(times.size() == 0) {
-			times.add(c.getString(R.string.shrug));
-		}
-		return times;
 	}
 	
 	protected ArrayList<JSONObject> findTime(String feedUrl) {
@@ -114,6 +99,7 @@ public class GetLineFeed extends BetterAsyncTask<String, Void, ArrayList<JSONObj
 	}
 
 	protected void after(Context c, ArrayList<JSONObject> next) {
+		Log.v(TAG, "next: "+next);
 		setDisplay(next);
 	}
 
