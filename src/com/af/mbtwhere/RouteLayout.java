@@ -43,7 +43,9 @@ public class RouteLayout extends LinearLayout {
 			Log.v(TAG, "time: "+time);
 			LayoutInflater inflater = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			inflater.inflate(R.layout.time_text, getTimes());
-			((TextView) getTimes().findViewById(R.id.time_text)).setText(time);
+			//set the *last* time, as ids are useless here
+			int numChildren = getTimes().getChildCount();
+			((TextView) getTimes().getChildAt(numChildren-1)).setText(time);
 		}
 	}
 	

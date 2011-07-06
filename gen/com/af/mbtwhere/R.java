@@ -29,7 +29,6 @@ public final class R {
         public static final int route_container=0x7f060010;
         public static final int service=0x7f06000d;
         public static final int start=0x7f060009;
-        public static final int time_text=0x7f060011;
         public static final int times=0x7f06000f;
         public static final int title=0x7f06000e;
     }
